@@ -1,0 +1,73 @@
+---
+apiVersion: eksctl.io/v1alpha5
+kind: ClusterConfig
+
+metadata:
+  name: ${EKS_CLUSTER_NAME}
+  region: ${AWS_REGION}
+  version: "${K8S_VERSION}"
+
+availabilityZones: ["us-east-2a", "us-east-2b", "us-east-2c"]
+
+nodeGroups:
+  - name: cpu-workers-nodegroup
+    instanceType: ${EC2_INSTANCE_TYPE}
+    labels:
+      node-class: cpu-workloads
+      nodegroup-type: cpu-workloads
+    tags:
+      # EC2 tags required for cluster-autoscaler auto-discovery
+      k8s.io/cluster-autoscaler/node-template/label/lifecycle: OnDemand
+      k8s.io/cluster-autoscaler/node-template/label/aws.amazon.com/spot: "false"
+      k8s.io/cluster-autoscaler/node-template/label/gpu-count: "0"
+      k8s.io/cluster-autoscaler/enabled: "true"
+      k8s.io/cluster-autoscaler/cluster-23: "owned"
+    desiredCapacity: $EC2_CPU_DESIRED_CAPACITY
+    minSize: 0
+    maxSize: 10
+    volumeSize: 100
+    iam:
+      withAddonPolicies:
+        imageBuilder: true
+        autoScaler: true
+        appMesh: true
+        appMeshPreview: true
+        albIngress: true
+        cloudWatch: true
+    ssh:
+      allow: true
+      publicKeyPath: ${SSH_PUBLIC_KEY_PATH}
+
+  - name: gpu-workers-nodegroup
+    instanceType: ${EC2_GPU_INSTANCE_TYPE}
+    # Make sure the availability zone here is one of cluster availability zones.
+    availabilityZones: ["us-east-2b"]
+    labels:
+      node-class: gpu-workloads
+      nodegroup-type: gpu-workloads
+    tags:
+      # EC2 tags required for cluster-autoscaler auto-discovery
+      k8s.io/cluster-autoscaler/node-template/label/lifecycle: OnDemand
+      k8s.io/cluster-autoscaler/node-template/label/aws.amazon.com/spot: "false"
+      k8s.io/cluster-autoscaler/node-template/label/gpu-count: "0"
+      k8s.io/cluster-autoscaler/enabled: "true"
+      k8s.io/cluster-autoscaler/cluster-23: "owned"
+    desiredCapacity: $EC2_GPU_DESIRED_CAPACITY
+    minSize: 0
+    maxSize: 5
+    volumeSize: 100
+    iam:
+      withAddonPolicies:
+        imageBuilder: true
+        autoScaler: true
+        appMesh: true
+        appMeshPreview: true
+        albIngress: true
+        cloudWatch: true
+    ssh:
+      allow: true
+      publicKeyPath: ${SSH_PUBLIC_KEY_PATH}
+
+cloudWatch:
+  clusterLogging:
+    enableTypes: ["audit", "authenticator"]

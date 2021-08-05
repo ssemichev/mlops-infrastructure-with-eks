@@ -1,0 +1,40 @@
+# Terraform files
+.terraform
+terraform.tfstate
+terraform.tfvars
+*.tfstate*
+
+*.swa
+*.swp
+*.swo
+.backend
+*.backup
+*.retry
+*.pyc
+*.bak
+workspace
+
+id_rsa*
+
+# OS X files
+.history
+.DS_Store
+
+# IntelliJ files
+.idea_modules
+*.iml
+*.iws
+*.ipr
+.idea
+.idea/
+build/
+*/build/
+out/
+ssh.cfg
+inventory
+*.log
+openshift-parameters.json
+setEnvVariabes
+.vault_pass.txt
+.bootstrap_stack
+*.pem
