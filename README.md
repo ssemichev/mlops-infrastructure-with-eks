@@ -14,3 +14,9 @@ cd ..
 ./bootstrap-eks-dev.sh
 ```
 
+### To destroy the cluster and clean-up all base infrastructure resources
+
+```
+./destroy-eks-dev.sh
+```
+

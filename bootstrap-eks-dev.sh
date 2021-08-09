@@ -12,10 +12,12 @@ export K8S_VERSION=1.19
 export KUBE_CONFIG=~/.kube/config-${EKS_CLUSTER_NAME}
 export SSH_PUBLIC_KEY_PATH=~/.ssh/mlops-eks.pub
 
+export OWNER=eSimplicity
+export PROJECT=mlops
+
 echo "ENVIRONMENT: $ENVIRONMENT"
 echo "EKS_CLUSTER_NAME: $EKS_CLUSTER_NAME"
 echo "KUBE_CONFIG: $KUBE_CONFIG"
-
 
 export EC2_CPU_INSTANCE_TYPE=m5.large
 export EC2_CPU_DESIRED_CAPACITY=2
@@ -44,8 +46,7 @@ done
 
 rm ./k8s/cluster.yaml
 
-#echo ""
-#echo "Completed successfully"
+aws s3 cp ${KUBE_CONFIG} s3://esimplicity-mlops/eks/configs/${ENVIRONMENT}/config-${EKS_CLUSTER_NAME}
 
-
-
+echo ""
+echo "Completed successfully"
