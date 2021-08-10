@@ -3,34 +3,36 @@ apiVersion: eksctl.io/v1alpha5
 kind: ClusterConfig
 
 metadata:
-  name: mlops-dev
-  region: us-east-2
-  version: "1.19"
+  name: ${EKS_CLUSTER_NAME}
+  region: ${AWS_REGION}
+  version: "${K8S_VERSION}"
   tags:
-    owner: eSimplicity
-    project: mlops
-    environment: dev
+    owner: ${OWNER}
+    project: ${PROJECT}
+    environment: ${ENVIRONMENT}
 
 availabilityZones: ["us-east-2a", "us-east-2b", "us-east-2c"]
 
 nodeGroups:
   - name: cpu-workers-nodegroup
-    instanceType: 
+    instanceType: ${EC2_INSTANCE_TYPE}
     labels:
       node-class: cpu-workloads
       nodegroup-type: cpu-workloads
-      kubernets.io/role: cpu-workloads-worker
+      kubernetes.io/role: cpu-workloads-worker
     tags:
-      owner: eSimplicity
-      usage: mlops
-      environment: dev
+      owner: ${OWNER}
+      usage: ${PROJECT}
+      environment: ${ENVIRONMENT}
+      type: "EKS"
+      cluster: ${EKS_CLUSTER_NAME}
       # EC2 tags required for cluster-autoscaler auto-discovery
       k8s.io/cluster-autoscaler/node-template/label/lifecycle: OnDemand
       k8s.io/cluster-autoscaler/node-template/label/aws.amazon.com/spot: "false"
       k8s.io/cluster-autoscaler/node-template/label/gpu-count: "0"
       k8s.io/cluster-autoscaler/enabled: "true"
       k8s.io/cluster-autoscaler/cluster-23: "owned"
-    desiredCapacity: 2
+    desiredCapacity: $EC2_CPU_DESIRED_CAPACITY
     minSize: 0
     maxSize: 10
     volumeSize: 100
@@ -44,27 +46,29 @@ nodeGroups:
         cloudWatch: true
     ssh:
       allow: true
-      publicKeyPath: /Users/sergey.semichev/.ssh/mlops-eks.pub
+      publicKeyPath: ${SSH_PUBLIC_KEY_PATH}
 
   - name: gpu-workers-nodegroup
-    instanceType: p2.xlarge
+    instanceType: ${EC2_GPU_INSTANCE_TYPE}
     # Make sure the availability zone here is one of cluster availability zones.
     availabilityZones: ["us-east-2b"]
     labels:
       node-class: gpu-workloads
       nodegroup-type: gpu-workloads
-      kubernets.io/role: gpu-workloads-worker
+      kubernetes.io/role: gpu-workloads-worker
     tags:
-      owner: eSimplicity
-      usage: mlops
-      environment: dev
+      owner: ${OWNER}
+      usage: ${PROJECT}
+      environment: ${ENVIRONMENT}
+      type: "EKS"
+      cluster: ${EKS_CLUSTER_NAME}
       # EC2 tags required for cluster-autoscaler auto-discovery
       k8s.io/cluster-autoscaler/node-template/label/lifecycle: OnDemand
       k8s.io/cluster-autoscaler/node-template/label/aws.amazon.com/spot: "false"
       k8s.io/cluster-autoscaler/node-template/label/gpu-count: "0"
       k8s.io/cluster-autoscaler/enabled: "true"
       k8s.io/cluster-autoscaler/cluster-23: "owned"
-    desiredCapacity: 0
+    desiredCapacity: $EC2_GPU_DESIRED_CAPACITY
     minSize: 0
     maxSize: 5
     volumeSize: 100
@@ -78,7 +82,7 @@ nodeGroups:
         cloudWatch: true
     ssh:
       allow: true
-      publicKeyPath: /Users/sergey.semichev/.ssh/mlops-eks.pub
+      publicKeyPath: ${SSH_PUBLIC_KEY_PATH}
 
 cloudWatch:
   clusterLogging:

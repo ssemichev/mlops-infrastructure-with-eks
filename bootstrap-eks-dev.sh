@@ -35,7 +35,7 @@ envsubst < ./k8s/cluster.template.yaml > ./k8s/cluster.yaml
 
 print "Running dry-run..."
 
-eksctl create cluster -f ./k8s/cluster.yaml --dry-run
+eksctl create cluster -f ./k8s-objects/cluster.yaml --dry-run
 
 while true; do
     read -p "Do you wish to build the new EKS cluster (yes/no)?" yn
