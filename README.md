@@ -7,6 +7,13 @@
 * aws-iam-authenticator (>=0.5.3)
 * istioctl (>=1.10.3)
 
+
+```
+export AWS_DEFAULT_REGION=us-east-2
+export AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID
+export AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY
+```
+
 ### To create K8S cluster
 
 ```
