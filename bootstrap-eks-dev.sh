@@ -46,7 +46,7 @@ while true; do
     esac
 done
 
-rm -f -- ./k8s-objects/cluster.yaml
+[ -e ./k8s-objects/cluster.yaml ] && rm -- ./k8s-objects/cluster.yaml
 
 aws s3 cp ${KUBECONFIG} s3://ex-mlops-eks/eks/configs/${ENVIRONMENT}/config-${EKS_CLUSTER_NAME}
 
