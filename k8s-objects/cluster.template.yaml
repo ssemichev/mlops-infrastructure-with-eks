@@ -6,6 +6,10 @@ metadata:
   name: ${EKS_CLUSTER_NAME}
   region: ${AWS_REGION}
   version: "${K8S_VERSION}"
+  tags:
+    owner: ${OWNER}
+    project: ${PROJECT}
+    environment: ${ENVIRONMENT}
 
 availabilityZones: ["us-east-2a", "us-east-2b", "us-east-2c"]
 
@@ -15,11 +19,17 @@ nodeGroups:
     labels:
       node-class: cpu-workloads
       nodegroup-type: cpu-workloads
+#      kubernetes.io/role: cpu-workloads-worker
     tags:
+      owner: ${OWNER}
+      usage: ${PROJECT}
+      environment: ${ENVIRONMENT}
+      type: "EKS"
+      cluster: ${EKS_CLUSTER_NAME}
       # EC2 tags required for cluster-autoscaler auto-discovery
       k8s.io/cluster-autoscaler/node-template/label/lifecycle: OnDemand
       k8s.io/cluster-autoscaler/node-template/label/aws.amazon.com/spot: "false"
-      k8s.io/cluster-autoscaler/node-template/label/gpu-count: "0"
+      k8s.io/cluster-autoscaler/node-template/label/cpu-count: "0"
       k8s.io/cluster-autoscaler/enabled: "true"
       k8s.io/cluster-autoscaler/cluster-23: "owned"
     desiredCapacity: $EC2_CPU_DESIRED_CAPACITY
@@ -45,7 +55,13 @@ nodeGroups:
     labels:
       node-class: gpu-workloads
       nodegroup-type: gpu-workloads
+      node-role: gpu-workloads-worker
     tags:
+      owner: ${OWNER}
+      usage: ${PROJECT}
+      environment: ${ENVIRONMENT}
+      type: "EKS"
+      cluster: ${EKS_CLUSTER_NAME}
       # EC2 tags required for cluster-autoscaler auto-discovery
       k8s.io/cluster-autoscaler/node-template/label/lifecycle: OnDemand
       k8s.io/cluster-autoscaler/node-template/label/aws.amazon.com/spot: "false"
