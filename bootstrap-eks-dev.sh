@@ -11,7 +11,7 @@ export ENVIRONMENT=dev
 export EKS_CLUSTER_NAME=mlops-${ENVIRONMENT}
 export AWS_REGION=${AWS_DEFAULT_REGION}
 export K8S_VERSION=1.19
-export KUBE_CONFIG=~/.kube/config-${EKS_CLUSTER_NAME}
+export KUBECONFIG=~/.kube/config-${EKS_CLUSTER_NAME}
 export SSH_PUBLIC_KEY_PATH=~/.ssh/mlops-eks.pub
 
 export OWNER=OSS
@@ -19,7 +19,7 @@ export PROJECT=mlops
 
 echo "ENVIRONMENT: $ENVIRONMENT"
 echo "EKS_CLUSTER_NAME: $EKS_CLUSTER_NAME"
-echo "KUBE_CONFIG: $KUBE_CONFIG"
+echo "KUBECONFIG: $KUBECONFIG"
 
 export EC2_CPU_INSTANCE_TYPE=m5.xlarge
 export EC2_CPU_DESIRED_CAPACITY=5
@@ -40,16 +40,17 @@ eksctl create cluster -f ./k8s-objects/cluster.yaml --dry-run
 while true; do
     read -p "Do you wish to build the new EKS cluster (yes/no)?" yn
     case $yn in
-        [Yy]* ) eksctl create cluster -f ./k8s-objects/cluster.yaml --kubeconfig ${KUBE_CONFIG} || rm ./k8s/cluster.yaml; break;;
+        [Yy]* ) eksctl create cluster -f ./k8s-objects/cluster.yaml --kubeconfig ${KUBECONFIG} || rm ./k8s/cluster.yaml; break;;
         [Nn]* ) rm ./k8s-objects/cluster.yaml; exit;;
         * ) echo "Please answer yes or no.";;
     esac
 done
 
-rm ./k8s-objects/cluster.yaml
+rm -f -- ./k8s-objects/cluster.yaml
 
-aws s3 cp ${KUBE_CONFIG} s3://ex-mlops-eks/eks/configs/${ENVIRONMENT}/config-${EKS_CLUSTER_NAME}
+aws s3 cp ${KUBECONFIG} s3://ex-mlops-eks/eks/configs/${ENVIRONMENT}/config-${EKS_CLUSTER_NAME}
 
+print  "Creating the new namespaces..."
 kubectl create namespace mlops-dev || true
 kubectl create namespace mlops-qa || true
 
@@ -78,8 +79,6 @@ DASHBOARD_TOKEN=$(kubectl -n kube-system describe secret $DASHBOARD_ADMIN_SECRET
 
 echo "DASHBOARD_TOKEN: $DASHBOARD_TOKEN"
 echo "See Open Kubernetes Web UI (Dashboard) section in the README.md file"
-
-
 
 print "Completed successfully"
 
