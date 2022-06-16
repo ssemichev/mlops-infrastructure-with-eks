@@ -14,7 +14,7 @@ export K8S_VERSION=1.19
 export KUBE_CONFIG=~/.kube/config-${EKS_CLUSTER_NAME}
 export SSH_PUBLIC_KEY_PATH=~/.ssh/mlops-eks.pub
 
-export OWNER=eSimplicity
+export OWNER=OSS
 export PROJECT=mlops
 
 echo "ENVIRONMENT: $ENVIRONMENT"
@@ -48,7 +48,7 @@ done
 
 rm ./k8s-objects/cluster.yaml
 
-aws s3 cp ${KUBE_CONFIG} s3://esimplicity-mlops/eks/configs/${ENVIRONMENT}/config-${EKS_CLUSTER_NAME}
+aws s3 cp ${KUBE_CONFIG} s3://ex-mlops/eks/configs/${ENVIRONMENT}/config-${EKS_CLUSTER_NAME}
 
 kubectl create namespace mlops-dev || true
 kubectl create namespace mlops-qa || true
