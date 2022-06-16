@@ -45,3 +45,20 @@ kubectl get nodes
 eksctl get nodegroups --cluster mlops-dev
 ```
 
+### Open Kubernetes Web UI (Dashboard)
+
+1) Start the kubectl proxy in the terminal window (should be configured to connect to K8S cluster)
+```
+>kubectl proxy
+```
+2) Open this URL in your browser
+```
+>open http://localhost:8001/api/v1/namespaces/kubernetes-dashboard/services/https:kubernetes-dashboard:/proxy/#!/login
+```
+3) Choose Token, paste the <authentication_token> from $DASHBOARD_TOKEN output
+
+### Troubleshooting
+
+```
+kubectl describe pod <pod-name> -n <ns-name>
+```

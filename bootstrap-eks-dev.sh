@@ -21,8 +21,8 @@ echo "ENVIRONMENT: $ENVIRONMENT"
 echo "EKS_CLUSTER_NAME: $EKS_CLUSTER_NAME"
 echo "KUBE_CONFIG: $KUBE_CONFIG"
 
-export EC2_CPU_INSTANCE_TYPE=m5.large
-export EC2_CPU_DESIRED_CAPACITY=2
+export EC2_CPU_INSTANCE_TYPE=m5.xlarge
+export EC2_CPU_DESIRED_CAPACITY=5
 export EC2_GPU_INSTANCE_TYPE=p2.xlarge
 export EC2_GPU_DESIRED_CAPACITY=0
 
@@ -31,7 +31,7 @@ echo "EC2_CPU_DESIRED_CAPACITY: $EC2_CPU_DESIRED_CAPACITY"
 echo "EC2_GPU_INSTANCE_TYPE: $EC2_GPU_INSTANCE_TYPE"
 echo "EC2_GPU_DESIRED_CAPACITY: $EC2_GPU_DESIRED_CAPACITY"
 
-envsubst < ./k8s/cluster.template.yaml > ./k8s/cluster.yaml
+envsubst < ./k8s-objects/cluster.template.yaml > ./k8s-objects/cluster.yaml
 
 print "Running dry-run..."
 
@@ -40,13 +40,13 @@ eksctl create cluster -f ./k8s-objects/cluster.yaml --dry-run
 while true; do
     read -p "Do you wish to build the new EKS cluster (yes/no)?" yn
     case $yn in
-        [Yy]* ) eksctl create cluster -f ./k8s/cluster.yaml --kubeconfig ${KUBE_CONFIG} || rm ./k8s/cluster.yaml; break;;
-        [Nn]* ) rm ./k8s/cluster.yaml; exit;;
+        [Yy]* ) eksctl create cluster -f ./k8s-objects/cluster.yaml --kubeconfig ${KUBE_CONFIG} || rm ./k8s/cluster.yaml; break;;
+        [Nn]* ) rm ./k8s-objects/cluster.yaml; exit;;
         * ) echo "Please answer yes or no.";;
     esac
 done
 
-rm ./k8s/cluster.yaml
+rm ./k8s-objects/cluster.yaml
 
 aws s3 cp ${KUBE_CONFIG} s3://esimplicity-mlops/eks/configs/${ENVIRONMENT}/config-${EKS_CLUSTER_NAME}
 
@@ -77,12 +77,9 @@ DASHBOARD_ADMIN_SECRET_NAME=$(kubectl -n kube-system get secret | grep eks-admin
 DASHBOARD_TOKEN=$(kubectl -n kube-system describe secret $DASHBOARD_ADMIN_SECRET_NAME)
 
 echo "DASHBOARD_TOKEN: $DASHBOARD_TOKEN"
+echo "See Open Kubernetes Web UI (Dashboard) section in the README.md file"
 
-# Start the kubectl proxy in the terminal window (should be configured to connect to K8S cluster)
-# >kubectl proxy
-# Open this URL in your browser
-# http://localhost:8001/api/v1/namespaces/kubernetes-dashboard/services/https:kubernetes-dashboard:/proxy/#!/login
-# Choose Token, paste the <authentication_token> from $DASHBOARD_TOKEN output
+
 
 print "Completed successfully"
 

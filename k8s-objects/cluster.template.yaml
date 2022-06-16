@@ -19,7 +19,7 @@ nodeGroups:
     labels:
       node-class: cpu-workloads
       nodegroup-type: cpu-workloads
-      kubernetes.io/role: cpu-workloads-worker
+#      kubernetes.io/role: cpu-workloads-worker
     tags:
       owner: ${OWNER}
       usage: ${PROJECT}
@@ -29,7 +29,7 @@ nodeGroups:
       # EC2 tags required for cluster-autoscaler auto-discovery
       k8s.io/cluster-autoscaler/node-template/label/lifecycle: OnDemand
       k8s.io/cluster-autoscaler/node-template/label/aws.amazon.com/spot: "false"
-      k8s.io/cluster-autoscaler/node-template/label/gpu-count: "0"
+      k8s.io/cluster-autoscaler/node-template/label/cpu-count: "0"
       k8s.io/cluster-autoscaler/enabled: "true"
       k8s.io/cluster-autoscaler/cluster-23: "owned"
     desiredCapacity: $EC2_CPU_DESIRED_CAPACITY
@@ -55,7 +55,7 @@ nodeGroups:
     labels:
       node-class: gpu-workloads
       nodegroup-type: gpu-workloads
-      kubernetes.io/role: gpu-workloads-worker
+      node-role: gpu-workloads-worker
     tags:
       owner: ${OWNER}
       usage: ${PROJECT}
