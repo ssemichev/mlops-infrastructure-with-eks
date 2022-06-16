@@ -48,7 +48,7 @@ done
 
 rm ./k8s-objects/cluster.yaml
 
-aws s3 cp ${KUBE_CONFIG} s3://ex-mlops/eks/configs/${ENVIRONMENT}/config-${EKS_CLUSTER_NAME}
+aws s3 cp ${KUBE_CONFIG} s3://ex-mlops-eks/eks/configs/${ENVIRONMENT}/config-${EKS_CLUSTER_NAME}
 
 kubectl create namespace mlops-dev || true
 kubectl create namespace mlops-qa || true

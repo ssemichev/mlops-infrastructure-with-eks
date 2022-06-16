@@ -16,6 +16,8 @@ if [ "" == "$cluster_name" ];then
   shift 1
 fi
 
+export AWS_DEFAULT_REGION=us-east-2
+
 eksctl delete cluster --name=${cluster_name}
 
 #aws ec2 describe-volumes --region us-east-2 \

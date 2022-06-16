@@ -10,7 +10,6 @@
 ### To create K8S cluster
 
 ```
-cd ..
 ./bootstrap-eks-dev.sh
 ```
 
@@ -29,7 +28,7 @@ eksctl scale nodegroup --cluster=mlops-dev --nodes=3 cpu-workers-nodegroup
 
 1) Use original kubeconfig created by build script
 ```
-aws s3 cp s3://ex-mlops/eks/configs/dev/config-mlops-dev ~/.kube/config-mlops-dev
+aws s3 cp s3://ex-mlops-eks/eks/configs/dev/config-mlops-dev ~/.kube/config-mlops-dev
 export KUBECONFIG=~/.kube/config-mlops-dev
 kubectl get nodes
 eksctl get nodegroups --cluster mlops-dev

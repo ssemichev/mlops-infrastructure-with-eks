@@ -38,3 +38,5 @@ setEnvVariabes
 .vault_pass.txt
 .bootstrap_stack
 *.pem
+
+/k8s-objects/cluster.yaml
